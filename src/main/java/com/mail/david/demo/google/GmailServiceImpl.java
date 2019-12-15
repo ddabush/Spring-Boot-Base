@@ -99,8 +99,6 @@ public final class GmailServiceImpl implements GmailService {
         }
         email.setContent(multiPart);
         return files;
-
-
     }
 
     private List<File> getFileFromUrls(List<String> urls) {
