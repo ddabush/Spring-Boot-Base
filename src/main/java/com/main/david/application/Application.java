@@ -1,4 +1,4 @@
-package com.main.david.demo;
+package com.main.david.application;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
