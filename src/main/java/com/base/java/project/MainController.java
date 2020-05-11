@@ -1,4 +1,4 @@
-package com.main.david.demo;
+package com.base.java.project;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
