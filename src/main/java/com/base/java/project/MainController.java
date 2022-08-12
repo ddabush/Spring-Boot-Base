@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 
 @Controller
-@RequestMapping(value = "/main")
+@RequestMapping(value = "/")
 
 public class MainController {
 
@@ -24,7 +24,7 @@ public class MainController {
 
 
     @PostMapping("/send")
-    ResponseEntity send() throws GeneralSecurityException, IOException {
+    ResponseEntity send(){
         ResponseEntity httpResponse = new ResponseEntity(HttpStatus.OK);
 
         return httpResponse;
