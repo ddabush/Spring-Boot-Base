@@ -18,6 +18,8 @@ public class MainController {
     ResponseEntity pow3(@RequestParam int number, int pow)
     {
         ResponseEntity httpResponse = new ResponseEntity(Math.pow(number,pow),HttpStatus.OK);
+        System.out.println("print aaa");
+        System.out.println(Thread.currentThread().getName());
         return httpResponse;
     }
 
@@ -25,6 +27,7 @@ public class MainController {
     @PostMapping(value = "/calc")
     public ResponseEntity calculatePow(@RequestBody DataToCalculate number) {
         Calculate c= new Calculate();
+        System.out.println(Thread.currentThread().getName());
         Integer result = c.calculatePow(number.getX());
         ResponseEntity httpResponse = new ResponseEntity(result,HttpStatus.OK);
         return httpResponse;

@@ -1,0 +1,5 @@
+class in:file language:java repo:scala/scala
+addClass in:file language:js repo:jquery/jquery
+factory in:file language:java repo:openjdk/jdk
+cache in:file repo:scala/scala
+while in:file repo:openjdk/jdk
