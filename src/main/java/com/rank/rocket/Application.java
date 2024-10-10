@@ -1,4 +1,4 @@
-package com.base.java.project;
+package com.rank.rocket;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,8 +12,7 @@ public class Application {
     }
 
 
-
-    }
+}
 
 
 

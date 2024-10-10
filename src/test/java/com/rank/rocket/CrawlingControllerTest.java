@@ -1,10 +1,10 @@
-package com.base.java.project;
+package com.rank.rocket;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MainControllerTest {
+class CrawlingControllerTest {
 
     @Test
     void health() {
