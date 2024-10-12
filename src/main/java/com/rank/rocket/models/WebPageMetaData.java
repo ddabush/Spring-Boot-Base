@@ -13,7 +13,6 @@ public class WebPageMetaData {
     private String failedToCrawlReason;
     private String url;
     private int httpStatus;
-    private boolean hasH1;
-    private List<String> h1;
+    private List<PageIssue> issues;
 
 }

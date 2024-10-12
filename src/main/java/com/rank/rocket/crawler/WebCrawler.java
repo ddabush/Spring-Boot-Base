@@ -1,16 +1,24 @@
 package com.rank.rocket.crawler;
 
 import com.rank.rocket.data.structures.URLSToCrawlQueue;
+import com.rank.rocket.models.PageIssue;
 import com.rank.rocket.models.WebPageMetaData;
+import com.rank.rocket.service.IPageIssueEnricher;
+import com.rank.rocket.service.IPageIssueParser;
+import com.rank.rocket.service.impl.PageIssueEnricher;
 import com.rank.rocket.utils.URLUtils;
 import org.jsoup.Connection;
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,30 +40,31 @@ public class WebCrawler {
     private URLSToCrawlQueue urlsToCrawlQueue = new URLSToCrawlQueue();
     private int lastTasksSubmittedCount = 0;
     boolean stopCrawling = false;
+    private List<IPageIssueParser> pageIssueParsers;
+    private IPageIssueEnricher issueEnricher = new PageIssueEnricher();
 
-    public WebCrawler(String startURL) {
+    public WebCrawler(String startURL, List<IPageIssueParser> pageIssueParsers) {
         this.startURL = startURL;
         this.domain = URLUtils.getDomainName(startURL);
+        this.pageIssueParsers = pageIssueParsers;
     }
 
     private void extractInfoFromWebPage(String url) {
         visitedUrls.add(url);
         int statusCode = -1;
-        boolean crawlingFailed=false;
-        boolean hasH1=false;
+        boolean crawlingFailed = false;
         String failedToCrawlReason = null;
-        List<String> h1List=new ArrayList<>();
-        Connection.Response response = null;
+        List<PageIssue> issues = new ArrayList<>();
         try {
-            response = Jsoup.connect(url).execute();
+            Connection.Response response = Jsoup.connect(url).execute();
             statusCode = response.statusCode();
             Document doc = response.parse();
-            System.out.println(webPagesMetaData.size()+": url to investigate is " + url + " status code " + statusCode);
-            Elements h1Tags = doc.select("h1");
+            System.out.println(webPagesMetaData.size() + ": url to investigate is " + url + " status code " + statusCode);
 
-            if (!h1Tags.isEmpty()) {
-                hasH1 = true;
-                h1Tags.stream().map(Element::text).forEach(h1List::add);
+            for (IPageIssueParser<PageIssue> pageIssueParser : pageIssueParsers) {
+                PageIssue pageIssue = pageIssueParser.parsePage(doc);
+                issues.add(pageIssue);
+                issueEnricher.enrich(pageIssue);
             }
 
             Elements links = doc.select("a[href]");
@@ -65,15 +74,20 @@ public class WebCrawler {
                     urlsToCrawlQueue.putIfNeverUsed(nextUrl);
                 }
             }
+        } catch (HttpStatusException e) {
+            crawlingFailed = true;
+            statusCode = e.getStatusCode();
+            failedToCrawlReason = e.getMessage();
+            System.err.println("Failed to crawl: " + url + " due to " + e.getMessage());
         } catch (IOException e) {
-            crawlingFailed=true;
+            crawlingFailed = true;
             failedToCrawlReason = e.getMessage();
             System.err.println("Failed to crawl: " + url + " due to " + e.getMessage());
         } catch (Exception e) {
             failedToCrawlReason = e.getMessage();
-            crawlingFailed=true;
+            crawlingFailed = true;
         }
-        WebPageMetaData webPageMetaData = new WebPageMetaData(crawlingFailed, failedToCrawlReason, url,statusCode, hasH1, h1List);
+        WebPageMetaData webPageMetaData = new WebPageMetaData(crawlingFailed, failedToCrawlReason, url, statusCode, issues);
         webPagesMetaData.add(webPageMetaData);
     }
 
@@ -84,8 +98,8 @@ public class WebCrawler {
 
         while (tasksSubmittedCount.get() < MAX_PAGES_TO_CRAWL && !stopCrawling) {
             String url = urlsToCrawlQueue.pollURL();
-            if(url!=null){
-                executorService.submit(()->{
+            if (url != null) {
+                executorService.submit(() -> {
                     extractInfoFromWebPage(url);
                 });
                 tasksSubmittedCount.incrementAndGet();
@@ -106,13 +120,13 @@ public class WebCrawler {
         }
     }
 
-    class CheckIfNoTasksSubmittedRecently implements  Runnable {
+    class CheckIfNoTasksSubmittedRecently implements Runnable {
         @Override
         public void run() {
-            while(true){
+            while (true) {
                 try {
                     sleep(TIME_UNTIL_NEXT_CHECK);
-                    if(lastTasksSubmittedCount==tasksSubmittedCount.get()){
+                    if (lastTasksSubmittedCount == tasksSubmittedCount.get()) {
                         stopCrawling = true;
                         break;
                     }
