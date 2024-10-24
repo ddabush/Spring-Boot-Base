@@ -9,10 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class WebPageMetaData {
-    private boolean crawlingFailed;
-    private String failedToCrawlReason;
     private String url;
-    private int httpStatus;
+    private boolean isPageValid;
     private List<PageIssue> issues;
 
 }

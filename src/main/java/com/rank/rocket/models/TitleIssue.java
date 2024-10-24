@@ -10,13 +10,4 @@ import lombok.experimental.SuperBuilder;
 public class TitleIssue extends PageIssue {
     private String title;
     private int length;
-    private TitleStatus titleStatus;
-
-
-    public enum TitleStatus {
-        VALID,
-        MISSING,
-        LONG,
-        SHORT
-    }
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @SuperBuilder
 @Getter
 @Setter
-public class H1Issue extends PageIssue {
-    private List<H1Text> h1List;
-
+public class H2Issue extends PageIssue {
+    private List<String> h2List;
 }

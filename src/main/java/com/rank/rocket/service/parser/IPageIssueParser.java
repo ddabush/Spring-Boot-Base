@@ -1,4 +1,4 @@
-package com.rank.rocket.service;
+package com.rank.rocket.service.parser;
 
 import com.rank.rocket.models.PageIssue;
 import org.jsoup.nodes.Document;

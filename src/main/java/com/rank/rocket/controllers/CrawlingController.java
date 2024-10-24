@@ -2,8 +2,7 @@ package com.rank.rocket.controllers;
 
 import com.rank.rocket.crawler.WebCrawler;
 import com.rank.rocket.models.WebPageMetaData;
-import com.rank.rocket.service.IPageIssueParser;
-import com.rank.rocket.service.impl.PageIssueEnricher;
+import com.rank.rocket.service.parser.IPageIssueParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

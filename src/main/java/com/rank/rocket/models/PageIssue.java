@@ -15,9 +15,15 @@ import lombok.experimental.SuperBuilder;
         property = "type"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = H1Issue.class, name = "H1"),
-        @JsonSubTypes.Type(value = TitleIssue.class, name = "Title")
+        @JsonSubTypes.Type(value = HTTPResponseIssue.class, name = "httpResponse"),
+        @JsonSubTypes.Type(value = H1Issue.class, name = "h1"),
+        @JsonSubTypes.Type(value = H2Issue.class, name = "h2"),
+        @JsonSubTypes.Type(value = TitleIssue.class, name = "title"),
+        @JsonSubTypes.Type(value = MetaDescriptionIssue.class, name = "metaDescription"),
+        @JsonSubTypes.Type(value = ImageAltTextIssue.class, name = "imageAltText"),
+        @JsonSubTypes.Type(value = CanonicalIssue.class, name = "canonical")
 })
 public class PageIssue {
-    private boolean valid;
+    private Severity severity;
+    private IssueStatus status;
 }

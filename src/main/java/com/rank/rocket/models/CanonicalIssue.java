@@ -6,14 +6,14 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @EqualsAndHashCode(callSuper = true)
 @ToString
 @SuperBuilder
 @Getter
 @Setter
-public class H1Issue extends PageIssue {
-    private List<H1Text> h1List;
+public class CanonicalIssue extends PageIssue {
+    private String canonicalURL;
+    private boolean isSelfCanonical;
+    private boolean isCanonicalToDifferentURL;
 
 }
